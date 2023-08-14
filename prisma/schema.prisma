@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  email String @unique
+  hash  String
+
+  firstName String?
+  lastName  String?
+
+  bookmarks Bookmark[]
+  Book      Book[]
+  purchage  Purchage[]
+
+  @@map("users")
+}
+
+model Bookmark {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  title       String
+  description String?
+  Link        String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("bookmark")
+}
+
+model Book {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  title        String
+  description  String?
+  discountRate String?
+  coverImage   String?
+  price        String
+  User         User?   @relation(fields: [userId], references: [id])
+  userId       Int?
+
+  @@map("book")
+}
+
+model Purchage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  bookName       String
+  quantity       String?
+  total_price    String?
+  payment_method String?
+  User           User?   @relation(fields: [userId], references: [id])
+  userId         Int?
+
+  @@map("purchage")
+}
